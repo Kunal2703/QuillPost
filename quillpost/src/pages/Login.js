@@ -17,7 +17,7 @@ const Login = () => {
 
                         <Card color = "dark" inverse>
                             
-                            <CardHeader>
+                            <CardHeader className='text-center'>
                                 <h3> Login Here !!</h3>
                             </CardHeader>
                             
@@ -26,9 +26,9 @@ const Login = () => {
                                     {/*Email Field */}
 
                                     <FormGroup>
-                                        <Label for = "email">Enter Email</Label>
+                                        <Label for = "username">Enter Email</Label>
                                         
-                                        <Input type = "text" id = "email" />
+                                        <Input type = "text" id = "username" placeholder = "Enter Your User Name" required></Input>
 
                                     </FormGroup>
 
@@ -37,13 +37,13 @@ const Login = () => {
                                     <FormGroup>
                                         <Label for = "password">Enter Password</Label>
                                         
-                                        <Input type = "password" id = "password" />
+                                        <Input type = "password" id = "password" placeholder='Enter Your Password' required></Input>
 
                                     </FormGroup>
 
                                     <Container className="text-center">
-                                        <Button color='secondary'>Login</Button>
-                                        <Button className='ms-2'color = "secondary">Reset</Button>
+                                        <Button color='secondary' className='mt-4'>Login</Button>
+                                        <Button className='ms-3 mt-4'color = "secondary">Reset</Button>
                                     </Container>
 
                                 </Form>

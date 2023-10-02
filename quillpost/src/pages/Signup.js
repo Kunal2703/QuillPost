@@ -7,44 +7,55 @@ const Signup = () => {
                 <Row className="mt-4">
                     <Col sm={{ size: 6, offset: 3}}>
                         <Card color = "dark" inverse>
-                            <CardHeader>
+                            <CardHeader className="text-center">
 
-                                <h3>Fill Information to register</h3>
+                                <h3>SignUp Here !!</h3>
 
                             </CardHeader>
                             <CardBody>
                                 {/* Create Form */}
 
                                 <Form>
-                                    {/*Name Filed*/}
+                                    {/*User Field */}
                                     <FormGroup>
-                                        <Label for="name">Enter Name</Label>
-                                        <Input type="text" placeholder='Enter Name' id="name"></Input>
+                                        <Label for="username">User Name</Label>
+                                        <Input type="text" placeholder='Choose a unique username' id="username" required></Input>
+                                    </FormGroup>
+
+                                    {/*First Name Filed*/}
+                                    <FormGroup>
+                                        <Label for="firstname">Enter Name</Label>
+                                        <Input type="text" placeholder='Enter Your First Name' id="firstname" required></Input>
+                                    </FormGroup>
+
+                                    {/*Last Name Filed*/}
+                                    <FormGroup>
+                                        <Label for="lastname">Enter Name</Label>
+                                        <Input type="text" placeholder='Enter Your Last Name' id="lastname" required></Input>
                                     </FormGroup>
 
                                     {/*email Filed*/}
                                     <FormGroup>
                                         <Label for="email">Enter email</Label>
-                                        <Input type="email" placeholder='Enter Email' id="email"></Input>
+                                        <Input type="email" placeholder='name@example.com' id="email" required></Input>
                                     </FormGroup>
 
                                     {/*password Filed*/}
                                     <FormGroup>
-                                        <Label for="password">Enter Password</Label>
-                                        <Input type="password" placeholder='Enter Password' id="password"></Input>
+                                        <Label for="password">Choose a Password</Label>
+                                        <Input type="password" placeholder='Choose Your password' id="password" required></Input>
                                     </FormGroup>
 
-                                    {/*about Filed*/}
                                     <FormGroup>
-                                        <Label for="about">Enter About</Label>
-                                        <Input type="textarea" placeholder='Enter here' id="about" style={{ height: "250px" }}></Input>
+                                        <Label for="password">Confirm Password</Label>
+                                        <Input type="password" placeholder='Enter your password again' id="password" required></Input>
                                     </FormGroup>
 
-                                    <Container className="text-center">
-                                        <Button outline color='light' >
+                                    <Container className="text-center" >
+                                        <Button outline color='light'  className='mt-4'>
                                             Register
                                         </Button>
-                                        <Button color='secondary' type='reset' className='ms-2'>
+                                        <Button color='secondary' type='reset' className='ms-3 mt-4'>
                                             Reset
                                         </Button>
                                     </Container>
