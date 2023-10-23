@@ -82,8 +82,9 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "quillpost_auth",
         "USER": "root",
-        "PASSWORD" : "kunal2025",
-
+        "PASSWORD" : "1234",
+        "HOST": 'db',
+        "PORT": '3306',
     }
 }
 
