@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  authentication:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_DATABASE: quillpost_auth
+      MYSQL_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: 1234
+    
+    volumes:
+      - .dbdata:/var/lib/mysql
+    ports:
+      - 33066:3306
+
