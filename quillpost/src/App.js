@@ -6,10 +6,14 @@ import About from './pages/About';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Services from './pages/Services';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify'
+
 
 function App() {
   return (
     <BrowserRouter>
+    < ToastContainer />
     <Routes>
 
       <Route path = "/" element = {<Home />} />
