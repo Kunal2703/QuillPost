@@ -1,6 +1,9 @@
-import { Card, CardBody, CardHeader, Container, Input, Label, Form, FormGroup, Button, Row, Col } from 'reactstrap';
+import { Card, CardBody, CardHeader, Container, Input, Label, Form, FormGroup, Button, Row, Col, FormFeedback } from 'reactstrap';
 import Base from '../components/Base';
 import { useEffect, useState } from 'react';
+import { SignUp } from '../services/user-service';
+import { toast } from 'react-toastify';
+
 const Signup = () => {
 //----------new-------------
     //create hook
@@ -8,12 +11,12 @@ const Signup = () => {
     const [data, setData] = useState({
 
         username: '',
-        firstname: '',
-        lastname: '',
+        first_name: '',
+        last_name: '',
         email: '',
         password: '',
 
-    })
+    });
 
     const [error, setError] = useState({
         errors:{},
@@ -35,8 +38,8 @@ const Signup = () => {
     const resetData = ()=> {
         setData({
             username: '',
-            firstname: '',
-            lastname: '',
+            first_name: '',
+            last_name: '',
             email: '',
             password: '',
         })
@@ -46,13 +49,40 @@ const Signup = () => {
     const submitForm = (event) => {
         event.preventDefault()
 
+        //if(error.isError) {
+        //    toast.error("Form data is invalid!!")
+        //    return;
+        //}
+
         console.log(data);
         //data validation
 
 
         //call server api for sending the data
+        SignUp(data).then((resp) => {
+            console.log(resp)
+            console.log("Success log")
+            toast.success("Regestration Successfully!!")
+            setData({
+                username: '',
+                first_name: '',
+                last_name: '',
+                email: '',
+                password: '',
+            });
+        }).catch((error) => {
+            console.log(error);
+            console.log("Error log");
 
-    }
+            //handle Error
+            setError({
+                errors:error,
+                isError:true
+            })
+
+        });
+
+    };
 
 //----------end-------------
     return (
@@ -79,7 +109,12 @@ const Signup = () => {
                                             id="username" required 
                                             onChange={(e) => handleChange(e, 'username')}
                                             value={data.username}
+                                            invalid = { error.errors?.response?.data?.username ? true: false }
                                         />
+                                        <FormFeedback>
+                                            { error.errors?.response?.data?.username }
+                                        </FormFeedback>
+
                                     </FormGroup>
 
                                     {/*First Name Filed*/}
@@ -89,9 +124,14 @@ const Signup = () => {
                                             type="text" 
                                             placeholder='Enter Your First Name' 
                                             id="firstname" required
-                                            onChange={(e) => handleChange(e, 'firstname')}
-                                            value={data.firstname}
+                                            onChange={(e) => handleChange(e, 'first_name')}
+                                            value={data.first_name}
+                                            invalid = { error.errors?.response?.data?.first_name ? true: false }
                                         />
+                                        <FormFeedback>
+                                            { error.errors?.response?.data?.first_name }
+                                        </FormFeedback>
+
                                     </FormGroup>
 
                                     {/*Last Name Filed*/}
@@ -101,9 +141,14 @@ const Signup = () => {
                                             type="text" 
                                             placeholder='Enter Your Last Name' 
                                             id="lastname" required 
-                                            onChange={(e) => handleChange(e, 'lastname')}
-                                            value={data.lastname}
+                                            onChange={(e) => handleChange(e, 'last_name')}
+                                            value={data.last_name}
+                                            invalid = { error.errors?.response?.data?.last_name ? true: false }
                                         />
+                                        <FormFeedback>
+                                            { error.errors?.response?.data?.last_name }
+                                        </FormFeedback>
+
                                     </FormGroup>
 
                                     {/*email Filed*/}
@@ -115,7 +160,12 @@ const Signup = () => {
                                             id="email" required 
                                             onChange={(e) => handleChange(e, 'email')}
                                             value={data.email}
+                                            invalid = { error.errors?.response?.data?.email ? true: false }
                                         />
+                                        <FormFeedback>
+                                            { error.errors?.response?.data?.email }
+                                        </FormFeedback>
+                                    
                                     </FormGroup>
 
                                     {/*password Filed*/}
@@ -127,7 +177,12 @@ const Signup = () => {
                                             id="password" required 
                                             onChange={(e) => handleChange(e, 'password')}
                                             value={data.password}
+                                            invalid = { error.errors?.response?.data?.password ? true: false }
                                         />
+                                        <FormFeedback>
+                                            { error.errors?.response?.data?.password }
+                                        </FormFeedback>
+                                        
                                     </FormGroup>
 
 {/*
