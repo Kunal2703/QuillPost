@@ -77,7 +77,7 @@ const Login = () => {
                             <CardBody>
                                 <Form  onSubmit={handleFormSubmit} >
                                     
-                                    {/*Email Field */}
+                                    {/*username Field */}
 
                                     <FormGroup>
                                         <Label for = "username">Enter Username</Label>
