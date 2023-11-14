@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-7vldzdy_on5u_lee^yv-q!_7ctgdwz+svob6b@o=9-ys3^uuoa
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['authentication', 'localhost']
 
 
 # Application definition
@@ -83,7 +83,7 @@ DATABASES = {
         "NAME": "quillpost_auth",
         "USER": "root",
         "PASSWORD" : "1234",
-        "HOST": 'db',
+        "HOST": 'auth_db',
         "PORT": '3306',
 
     }

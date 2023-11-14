@@ -4,4 +4,4 @@ WORKDIR /app
 COPY requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 COPY . /app
-CMD ["./delayed_start.sh"]
+CMD ["./initial_script.sh"]

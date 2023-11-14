@@ -16,7 +16,7 @@ class CommentCreate(APIView):
         if not token:
             raise AuthenticationFailed("Unauthenticated")
         cookie_data={"jwt":token}
-        response=requests.get("http://localhost:8000/api/user", cookies=cookie_data)
+        response=requests.get("http://authentication:8000/api/user", cookies=cookie_data)
         
         if response.status_code == 200:
             username=response.json()["username"]
@@ -30,11 +30,11 @@ class CommentCreate(APIView):
             raise AuthenticationFailed("Token is invalid or expired")
        
 
-# class CommentListAPIView(ListAPIView):
-#     queryset = Comment.objects.all()
-#     serializer_class= CommentSerializer
-    # def get_queryset(self):
-    #     return super().get_queryset()
+class CommentListAPIView(ListAPIView):
+    queryset = Comment.objects.all()
+    serializer_class= CommentSerializer
+    def get_queryset(self):
+        return super().get_queryset()
 
 class CommentListByPost(ListAPIView):
     serializer_class=CommentSerializer
@@ -55,7 +55,7 @@ class DeleteCommentView(DestroyAPIView):
         if not token:
             raise AuthenticationFailed("Unauthenticated")
         cookie_data={"jwt":token}
-        response=requests.get("http://localhost:8000/api/user", cookies=cookie_data)
+        response=requests.get("http://authentication:8000/api/user", cookies=cookie_data)
 
         if response.status_code == 200:
             try:
