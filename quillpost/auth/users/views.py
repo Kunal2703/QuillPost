@@ -55,9 +55,9 @@ class UserView(APIView):
             raise AuthenticationFailed("Unauthenticated!")
         
         user= User.objects.filter(id=payload['id']).first()
-        serialzer=UserSerializer(user)
+        serializer=UserSerializer(user)
 
-        return Response(serialzer.data)
+        return Response(serializer.data)
     
 
 class LogoutView(APIView):

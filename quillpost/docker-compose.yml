@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+  authentication:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - ./auth:/app
+    depends_on:
+      - auth_db
+  
+  auth_db:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_DATABASE: quillpost_auth
+      MYSQL_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: 1234
+    volumes:
+      - ./auth/.dbdata:/var/lib/mysql
+    ports:
+      - 33066:3306
+
+  comments:
+    build:
+      context: ./comments
+      dockerfile: Dockerfile
+    ports:
+      - 9000:8000
+    volumes:
+      - ./comments:/app
+    depends_on:
+      - comment_db
+      - authentication
+
+  comment_db:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_DATABASE: quillpost_comment
+      MYSQL_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: 1234
+    volumes:
+      - ./comments/.dbdata:/var/lib/mysql
+    ports:
+      - 33067:3306
