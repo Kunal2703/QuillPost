@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, DestroyAPIView
@@ -10,6 +9,7 @@ from rest_framework.response import Response
 
 # Create your views here.
 
+
 class CommentCreate(APIView):
     def post(self, request):
         token = request.COOKIES.get('jwt')
@@ -17,6 +17,7 @@ class CommentCreate(APIView):
             raise AuthenticationFailed("Unauthenticated")
         cookie_data={"jwt":token}
         response=requests.get("http://localhost:8000/api/user", cookies=cookie_data)
+        
         if response.status_code == 200:
             username=response.json()["username"]
             data=request.data
@@ -29,14 +30,20 @@ class CommentCreate(APIView):
             raise AuthenticationFailed("Token is invalid or expired")
        
 
-class CommentListAPIView(ListAPIView):
-    queryset = Comment.objects.all()
-    serializer_class= CommentSerializer
+# class CommentListAPIView(ListAPIView):
+#     queryset = Comment.objects.all()
+#     serializer_class= CommentSerializer
     # def get_queryset(self):
     #     return super().get_queryset()
 
 class CommentListByPost(ListAPIView):
-    pass
+    serializer_class=CommentSerializer
+
+    def get_queryset(self):
+        post_id = self.kwargs.get('post_id')
+        queryset=Comment.objects.filter(post_id=post_id)
+        return queryset
+    
 
 
 class DeleteCommentView(DestroyAPIView):
@@ -49,6 +56,7 @@ class DeleteCommentView(DestroyAPIView):
             raise AuthenticationFailed("Unauthenticated")
         cookie_data={"jwt":token}
         response=requests.get("http://localhost:8000/api/user", cookies=cookie_data)
+
         if response.status_code == 200:
             try:
                 instance = self.get_object()
@@ -63,4 +71,17 @@ class DeleteCommentView(DestroyAPIView):
             
 
 class DeleteCommentByPost(DestroyAPIView):
-    pass
+    serializer_class=CommentSerializer
+    queryset=Comment.objects.all()
+
+    def delete(self, request, *args, **kwargs):     #How will you authenticate this request???, need an api from post which will give author user_id
+        # token=request.COOKIES.get('jwt')       
+        # if not token:
+        #     raise AuthenticationFailed("Unauthenticated")
+        # cookie_data={"jwt":token}
+        # response=requests.get("http://localhost:8000/api/user", cookies=cookie_data)
+        post_id = self.kwargs.get('post_id')
+        comments_to_delete = Comment.objects.filter(post_id=post_id)
+        comments_to_delete.delete()
+        return Response({"detail" : "Comments deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+    
