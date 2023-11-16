@@ -1,8 +1,11 @@
 import React from 'react'
+import Base from '../../components/Base'
 
 const   UserDashboard = () => {
   return (
-    <div>Welcome to the dashboard</div>
+    <Base>
+      <div>welcome to the dashboard</div>
+    </Base>
   )
 }
 export default UserDashboard
