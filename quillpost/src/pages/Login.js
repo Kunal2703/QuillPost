@@ -3,9 +3,14 @@ import Base from '../components/Base';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { loginUser } from '../services/user-service';
+import { doLoggin } from '../auth';
+import { useNavigate } from 'react-router-dom';
 
 
 const Login = () => {
+
+    const navigate = useNavigate()
+
     const[loginDetail, setLoginDetail] = useState({
         username: '',
         password: ''
@@ -38,9 +43,19 @@ const Login = () => {
         }
 
         //submit the data to server to generate token
-        loginUser(loginDetail).then((jwtTokenData) => {
-            console.log("User Login: ");
-            console.log(jwtTokenData);
+        loginUser(loginDetail).then((data) => {
+            console.log(data);
+
+
+            //save the data to local storage
+            doLoggin(data, () => {
+                console.log("login details saved to local storage")
+
+                //redirect to user dashboard page
+                navigate("/user/dashboard")
+
+            })
+
             toast.success("Login Success!!")
         }).catch(error => {
             console.log(error)
