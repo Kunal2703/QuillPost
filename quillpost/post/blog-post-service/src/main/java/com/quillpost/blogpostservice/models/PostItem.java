@@ -11,20 +11,37 @@ public class PostItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long post_id;
+	@Column(nullable = false)
 	private String username;
 	@Column(nullable = false)
 	private String title;
 	@Lob
 	@Column(nullable = false)
 	private String content;
-	@Column(nullable = false)
-	private int likes;
+	
+	@ManyToOne
+	@JoinColumn(name = "categoryName")
+	private Category category;
+	@Column
 	private Date date;
 	
-	public PostItem(String title, String content) {
+	
+	public PostItem() {
+		
+	}
+	
+	public PostItem(String username,String title, String content, Category category ) {
+		this.username = username;
 		this.title = title;
 		this.content = content;
-		this.likes = 0;
+		this.category = category;
+		
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getUsername() {
+		return username;
 	}
 	public Long getPostId() {
 		return post_id;
@@ -35,17 +52,14 @@ public class PostItem {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	public void setCategory(Category category) {
+		this.category = category;
+	}
 	public String getContent() {
 		return content;
 	}
 	public void setContent(String content) {
 		this.content = content;
-	}
-	public int getLikes() {
-		return likes;
-	}
-	public void setLikes(int likes) {
-		this.likes = likes;
 	}
 	@PrePersist
 	protected void onCreate() {
