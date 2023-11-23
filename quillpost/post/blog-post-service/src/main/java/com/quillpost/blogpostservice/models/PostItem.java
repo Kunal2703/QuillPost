@@ -11,20 +11,24 @@ public class PostItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long post_id;
+	
 	@Column(nullable = false)
 	private String username;
-	@Column(nullable = false)
+	
+	@Column(length = 100, nullable = false)
 	private String title;
+	
 	@Lob
-	@Column(nullable = false)
+	@Column(length = 10000, nullable = false)
 	private String content;
 	
-	@ManyToOne
-	@JoinColumn(name = "categoryName")
-	private Category category;
 	@Column
 	private Date date;
 	
+	@ManyToOne
+	@JoinColumn(name="categoryid")
+	private Category category;
+
 	
 	public PostItem() {
 		
@@ -37,33 +41,45 @@ public class PostItem {
 		this.category = category;
 		
 	}
+
 	public void setUsername(String username) {
 		this.username = username;
 	}
 	public String getUsername() {
 		return username;
 	}
+
 	public Long getPostId() {
 		return post_id;
-	}
-	public String getTitle() {
-		return title;
 	}
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	public String getTitle() {
+		return title;
+	}
+	
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+	public String getCategory(){
+		return this.category.getCategoryName();
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 	public String getContent() {
 		return content;
 	}
-	public void setContent(String content) {
-		this.content = content;
+	
+
+	public void setDate(Date date){
+		this.date = date;
 	}
-	@PrePersist
-	protected void onCreate() {
-	    this.date = new Date();
+
+	public Date getDate(){
+		return this.date;
 	}
 	
 }

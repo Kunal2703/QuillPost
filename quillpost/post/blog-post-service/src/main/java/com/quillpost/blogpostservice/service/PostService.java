@@ -3,13 +3,15 @@ package com.quillpost.blogpostservice.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.quillpost.blogpostservice.exceptions.NotFoundException;
 import com.quillpost.blogpostservice.models.Category;
 import com.quillpost.blogpostservice.models.PostItem;
+import com.quillpost.blogpostservice.repository.CategoryRepository;
 import com.quillpost.blogpostservice.repository.PostRepository;
 
 @Service
@@ -17,8 +19,10 @@ public class PostService {
 	
 	@Autowired
 	private PostRepository postRepository;
+
 	@Autowired
-	private CategoryService categoryService;
+	private CategoryRepository categoryRepository;
+
 	
 	public List<PostItem> getAllPost(){
 		List<PostItem> posts = new ArrayList<>();
@@ -26,25 +30,29 @@ public class PostService {
 		return posts;
 	}
 	
-	public 	Optional<PostItem> getPostById(Long postId){
-		return postRepository.findById(postId);
+	public PostItem getPostById(Long postId){
+		PostItem post = this.postRepository.findById(postId)
+			.orElseThrow(()-> new NotFoundException("Post", "post id", postId));
+		return post;
 	}
+
 	public List<PostItem> getAllPostByUsername(String username){
-		List<PostItem> posts = new ArrayList<>();
-		postRepository.findByUsername(username).forEach(posts::add);
-		return posts;
+		return postRepository.findByUsername(username);
 	}
-	public List<PostItem> getAllPostByCategory(Category category){
-		List<PostItem> posts =  new ArrayList<>();
-		postRepository.findByCategory(category).forEach(posts::add);
-		return posts;
+
+	public List<PostItem> getAllPostByCategory(Integer categoryID){
+		
+		Category cat = categoryRepository.findById(categoryID).orElseThrow(()-> new NotFoundException("Category","category id", categoryID));
+		return postRepository.findByCategory(cat);
 	}
 	
-	public PostItem createPost(PostItem post, String user_name) throws NotFoundException {
-//		post.setDate(new Date());// set the create of the post date
-//		Category category = categoryService.getCategoryByName(category_Name);
+	public PostItem createPost(PostItem post, String user_name, Integer categoryID){
+
+		Category category = this.categoryRepository.findById(categoryID)
+			.orElseThrow(()-> new NotFoundException("Category", "category ID", categoryID));
+		post.setCategory(category);
 		post.setUsername(user_name);
-//		post.setCategory(category);
+		post.setDate(new Date());
 		return postRepository.save(post);
 	}
 	public void deletePost(Long postId) {
