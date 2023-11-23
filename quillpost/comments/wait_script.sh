@@ -1,6 +1,9 @@
 #!/bin/bash
-
-sleep 10
+until nc -z -v -w30 "comment_db" 3306
+do
+    echo "Waiting for database connection..."
+    sleep 10
+done
 python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver 0.0.0.0:8000

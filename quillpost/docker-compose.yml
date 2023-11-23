@@ -46,3 +46,24 @@ services:
       - ./comments/.dbdata:/var/lib/mysql
     ports:
       - 33067:3306
+
+  post:
+    build:
+      context: ./post/blog-post-service
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - post_db  
+
+  post_db:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_DATABASE: blogdb
+      MYSQL_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: 1234
+    volumes: 
+      - ./post/blog-post-service/.dbdata:/var/lib/mysql  		
+    ports:
+      - 3307:3306
