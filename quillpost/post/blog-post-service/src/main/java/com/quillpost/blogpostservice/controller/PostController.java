@@ -46,7 +46,7 @@ public class PostController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Cookie", "jwt" + "=" + jwtToken);
 		HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = restTemplate.exchange("http://localhost:8000/api/user", HttpMethod.GET, requestEntity, String.class);
+		ResponseEntity<String> response = restTemplate.exchange("http://authentication:8000/api/user", HttpMethod.GET, requestEntity, String.class);
 		
 		HttpStatusCode status = response.getStatusCode();
 		if(status.is4xxClientError()) {
@@ -83,7 +83,7 @@ public class PostController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Cookie", "jwt" + "=" + jwtToken);
 		HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = restTemplate.exchange("http://localhost:8000/api/user", HttpMethod.GET, requestEntity, String.class);
+		ResponseEntity<String> response = restTemplate.exchange("http://authentication:8000/api/user", HttpMethod.GET, requestEntity, String.class);
 		HttpStatusCode status = response.getStatusCode();
 		if(status.is4xxClientError()) {
 			throw new UnauthorizedException("Unauthenticated !");
