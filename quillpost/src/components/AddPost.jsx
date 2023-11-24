@@ -3,22 +3,29 @@ import { Button, Card, CardBody, Container, Form, Input, Label } from 'reactstra
 import { loadAllCategories } from '../services/category-service'
 
 import JoditEditor from 'jodit-react';
-
-
+import { createPost as doCreatePost } from '../services/post-service';
+import { getCurrentUserDetail } from '../auth';
 
 const AddPost = () => {
 
     const editor = useRef(null)
-    const [content, setContent] = useState('')
-
+    //const [content, setContent] = useState('')
     const [categories, setCategories] = useState([])
+    const [user, setUser] = useState(undefined)
 
-    const config = {
-        placeholder : "Start typing..."
-    }
+
+    const [post, setPost] = useState({
+        title: '',
+        content: '',
+        categoryID: ''
+    })
+
+    //console.log(localStorage.getItem('data'))
 
     useEffect(
         () => {
+
+            setUser(getCurrentUserDetail())
             loadAllCategories().then((data) => {
                 console.log(data)
                 setCategories(data)
@@ -29,6 +36,46 @@ const AddPost = () => {
         []
     )
 
+    //field change function
+    const fieldChanged = (event) => {
+        //console.log(event)
+        setPost({...post, [event.target.name]: event.target.value})
+    }
+
+    const contentFieldChanged = (data) => {
+        setPost({...post, 'content': data})
+    }
+
+    //create post function
+    const createPost = (event) => {
+        event.preventDefault();
+        console.log(post)
+        if(post.title.trim() === ''){
+            alert("post title is required !!")
+            return;
+        }
+
+        if(post.content.trim() === ''){
+            alert("post content is required !!")
+            return;
+        }
+
+        if(post.categoryID === ''){
+            alert("select category ID !!")
+            return;
+        }
+
+        //submit the form on server
+        //post['username'] = user.id
+        doCreatePost(post).then(data => {
+            alert("post created")
+            console.log(post)
+        }).catch((error) => {
+            alert("error")
+            console.log(error)
+        }
+    )}
+
 
     return (
         <div className="wrappper">
@@ -38,9 +85,11 @@ const AddPost = () => {
 
                 <CardBody>
 
+                    {JSON.stringify(post)}
+
                     <h3>What going in your mind?</h3>
 
-                        <Form>
+                        <Form onSubmit={createPost}>
 
                             <div className='my-3'>
                                 <Label for="title" >Post Title</Label>
@@ -49,6 +98,8 @@ const AddPost = () => {
                                     id="title" 
                                     placeholder="Enter Your Post Title" 
                                     className="rounded-0"
+                                    name = "title"
+                                    onChange={fieldChanged} 
                                 />
                             </div>
 
@@ -65,8 +116,8 @@ const AddPost = () => {
 
                                     <JoditEditor
                                         ref = {editor}
-                                        value = {content}
-                                        onChange={newContent => setContent(newContent)}
+                                        value = {post.content}
+                                        onChange={contentFieldChanged}
                                     />
                             </div>
 
@@ -78,21 +129,26 @@ const AddPost = () => {
                                     id="category" 
                                     placeholder="Enter Your Post category" 
                                     className="rounded-0"
+                                    name="categoryID"
+                                    onChange={fieldChanged} 
+                                    defaultValue={0}
                                 >
+
+                                    <option disabled value={0}>--select category--</option>
+
                                     {
                                         categories.map((category) => (
-                                            <option>
+                                            <option value={category.categoryID} key = {category.categoryID}>
                                                 {category.categoryName}
                                             </option>
                                         ))
                                     }
-
                                 </Input>
 
                             </div>
 
                             <Container className="text-center">
-                                <Button className="rounded-0" color="primary">Create Post</Button>
+                                <Button type="submit" className="rounded-0" color="primary">Create Post</Button>
                                 <Button className="rounded-0 ms-3" color="danger">Reset Content</Button>
                             </Container>
 
