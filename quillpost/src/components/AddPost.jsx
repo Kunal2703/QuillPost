@@ -5,6 +5,7 @@ import { loadAllCategories } from '../services/category-service'
 import JoditEditor from 'jodit-react';
 import { createPost as doCreatePost } from '../services/post-service';
 import { getCurrentUserDetail } from '../auth';
+import { toast } from 'react-toastify';
 
 const AddPost = () => {
 
@@ -51,28 +52,33 @@ const AddPost = () => {
         event.preventDefault();
         console.log(post)
         if(post.title.trim() === ''){
-            alert("post title is required !!")
+            toast.error("post title is required !!")
             return;
         }
 
         if(post.content.trim() === ''){
-            alert("post content is required !!")
+            toast.error("post content is required !!")
             return;
         }
 
         if(post.categoryID === ''){
-            alert("select category ID !!")
+            toast.error("select category ID !!")
             return;
         }
 
         //submit the form on server
         //post['username'] = user.id
         doCreatePost(post).then(data => {
-            alert("post created")
-            console.log(post)
+            toast.success("Post Created!!")
+            //console.log(post)
+            setPost({
+                title: '',
+                content: '',
+                categoryID: ''
+            })
         }).catch((error) => {
-            alert("error")
-            console.log(error)
+            toast.error("Post not created due to some error!!")
+            //console.log(error)
         }
     )}
 
@@ -84,8 +90,6 @@ const AddPost = () => {
             <Card className="shadow-sm border-0 mt-5" >
 
                 <CardBody>
-
-                    {JSON.stringify(post)}
 
                     <h3>What going in your mind?</h3>
 
