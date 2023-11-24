@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializers import UserSerializer
+from rest_framework import status
+from .serializers import UserSerializer, UserProfileSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
-from .models import User
+from .models import User, UserProfile
 import jwt, datetime
 # Create your views here.
 
@@ -68,3 +69,32 @@ class LogoutView(APIView):
             "message": "logged out successfully"
         }
         return response
+    
+
+class UserProfileView(APIView):
+    def get(self, request, pk):
+        try:
+            user= User.objects.filter(id=pk).first()
+            user_profile = UserProfile.objects.get(pk=user)
+            serializer = UserProfileSerializer(user_profile)
+            return Response(serializer.data)
+        except UserProfile.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    def post(self, request):
+        token = request.COOKIES.get('jwt')
+        if not token:
+            raise AuthenticationFailed("Unauthenticated!")
+        
+        try:
+            payload= jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed("Unauthenticated!")
+        
+        user= User.objects.filter(id=payload['id']).first()
+        request.data['user'] = user
+        serializer = UserProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
