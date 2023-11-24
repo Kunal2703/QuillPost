@@ -1,10 +1,18 @@
 import React from 'react'
 import Base from '../../components/Base'
+import AddPost from '../../components/AddPost'
+import { Container } from 'reactstrap'
 
 const   UserDashboard = () => {
   return (
     <Base>
-      <div>welcome to the dashboard</div>
+
+    <Container>
+
+      <AddPost />
+
+    </Container>
+
     </Base>
   )
 }
