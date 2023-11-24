@@ -13,12 +13,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
+//import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -35,9 +36,8 @@ public class PostController {
 	@Autowired
 	private PostService postService;
 
-	
 	@PostMapping("/category/{categoryID}/posts")
-	public ResponseEntity<PostItem> createPost(@RequestBody PostItem post, @PathVariable Integer categoryID, @CookieValue(name = "jwt", required = false) String jwtToken ) throws UnauthorizedException, JSONException, NotFoundException{
+	public ResponseEntity<PostItem> createPost(@RequestBody PostItem post, @PathVariable Integer categoryID, @RequestHeader(name="jwt", required = false) String jwtToken ) throws UnauthorizedException, JSONException, NotFoundException{
 		RestTemplate restTemplate = new RestTemplate();
 		if(jwtToken == null ) {
 			throw new UnauthorizedException("Sorry ! Token not found");
@@ -75,7 +75,7 @@ public class PostController {
 
 	// Delete the post using postId
 	@DeleteMapping("/posts/{postId}")
-	public ResponseEntity<String> deletePost(@PathVariable Long postId,@CookieValue(name = "jwt", required = false) String jwtToken ) throws UnauthorizedException, JSONException {
+	public ResponseEntity<String> deletePost(@PathVariable Long postId,@RequestHeader(name="jwt", required = false) String jwtToken ) throws UnauthorizedException, JSONException {
 		RestTemplate restTemplate = new RestTemplate();
 		if(jwtToken == null ) {
 			throw new UnauthorizedException("Sorry ! Token not found");
