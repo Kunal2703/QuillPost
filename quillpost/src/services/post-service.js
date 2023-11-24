@@ -6,8 +6,8 @@ export const createPost = (postData) => {
 
     console.log(postData);
 
+    
     return myPostAxios.post(BASE_URL_POST+ `/api/category/${postData.categoryID}/posts`,postData)
         .then(response => response.data)
-    
 
 };

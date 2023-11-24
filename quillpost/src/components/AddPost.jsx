@@ -20,7 +20,7 @@ const AddPost = () => {
         categoryID: ''
     })
 
-    //console.log(localStorage.getItem('data'))
+    //console.log(JSON.parse(localStorage.getItem('data')))
 
     useEffect(
         () => {
