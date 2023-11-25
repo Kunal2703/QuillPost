@@ -10,7 +10,7 @@ public class PostItem {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long post_id;
+	private Long postID;
 	
 	@Column(nullable = false)
 	private String username;
@@ -50,7 +50,7 @@ public class PostItem {
 	}
 
 	public Long getPostId() {
-		return post_id;
+		return postID;
 	}
 	public void setTitle(String title) {
 		this.title = title;
@@ -62,8 +62,11 @@ public class PostItem {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	public String getCategory(){
+	public String getCategoryName(){
 		return this.category.getCategoryName();
+	}
+	public Integer getCategoryId(){
+		return this.category.getCategoryID();
 	}
 
 	public void setContent(String content) {

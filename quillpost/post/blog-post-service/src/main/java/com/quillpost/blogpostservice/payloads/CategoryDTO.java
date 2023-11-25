@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 public class CategoryDTO {
     
-    private Long categoryID;
+    private Integer categoryID;
     private String categoryName;
 }
