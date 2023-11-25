@@ -100,4 +100,9 @@ public class PostService {
 		postRepository.deleteById(postId);
 	}
 	
+	public List<PostItem> searchPosts(String keyword){
+		List<PostItem> posts = this.postRepository.findByTitleContaining(keyword);
+		return posts;
+	}
+
 }
