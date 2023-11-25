@@ -1,6 +1,8 @@
 package com.quillpost.blogpostservice.controller;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -25,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.quillpost.blogpostservice.models.PostItem;
 import com.quillpost.blogpostservice.payloads.PostResponse;
+import com.quillpost.blogpostservice.config.AppConstants;
 import com.quillpost.blogpostservice.exceptions.NotFoundException;
 import com.quillpost.blogpostservice.exceptions.UnauthorizedException;
 import com.quillpost.blogpostservice.service.PostService;
@@ -39,7 +42,11 @@ public class PostController {
 
 	//@CookieValue(name = "jwt", required = false) String jwtToken
 	@PostMapping("/category/{categoryID}/posts")
-	public ResponseEntity<PostItem> createPost(@RequestBody PostItem post, @PathVariable Integer categoryID, @RequestHeader(name="jwt", required = false) String jwtToken ) throws UnauthorizedException, JSONException, NotFoundException{
+	public ResponseEntity<PostItem> createPost(
+		@RequestBody PostItem post, 
+		@PathVariable Integer categoryID, 
+		@RequestHeader(name="jwt", required = false) String jwtToken ) throws UnauthorizedException, JSONException, NotFoundException
+	{
 		RestTemplate restTemplate = new RestTemplate();
 		if(jwtToken == null ) {
 			throw new UnauthorizedException("Sorry ! Token not found");
@@ -48,8 +55,8 @@ public class PostController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Cookie", "jwt" + "=" + jwtToken);
 		HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = restTemplate.exchange("http://authentication:8000/api/user", HttpMethod.GET, requestEntity, String.class);
-		//ResponseEntity<String> response = restTemplate.exchange("http://localhost:8000/api/user", HttpMethod.GET, requestEntity, String.class);
+		//ResponseEntity<String> response = restTemplate.exchange("http://authentication:8000/api/user", HttpMethod.GET, requestEntity, String.class);
+		ResponseEntity<String> response = restTemplate.exchange(AppConstants.AUTH_URL, HttpMethod.GET, requestEntity, String.class);
 		HttpStatusCode status = response.getStatusCode();
 		if(status.is4xxClientError()) {
 			throw new UnauthorizedException("Unauthenticated !");
@@ -63,10 +70,10 @@ public class PostController {
 
 	@GetMapping("/posts")
 	public ResponseEntity<PostResponse> getAllPosts(
-		@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-		@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-		@RequestParam(value = "sortBy", defaultValue = "postID", required = false) String sortBy,
-		@RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
+		@RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+		@RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+		@RequestParam(value = "sortBy", defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
+		@RequestParam(value = "sortDir", defaultValue = AppConstants.SORT_DIR, required = false) String sortDir
 	){
 		PostResponse posts = postService.getAllPost(pageNumber, pageSize, sortBy, sortDir);
 		return new ResponseEntity<>(posts, HttpStatus.OK);
@@ -81,7 +88,11 @@ public class PostController {
 
 	// Delete the post using postId
 	@DeleteMapping("/posts/{postId}")
-	public ResponseEntity<String> deletePost(@PathVariable Long postId,@RequestHeader(name="jwt", required = false) String jwtToken ) throws UnauthorizedException, JSONException {
+	public ResponseEntity<String> deletePost(
+		@PathVariable Long postId,
+		@RequestHeader(name="jwt", required = false) String jwtToken) throws UnauthorizedException, JSONException 
+	{
+		
 		RestTemplate restTemplate = new RestTemplate();
 		if(jwtToken == null ) {
 			throw new UnauthorizedException("Sorry ! Token not found");
@@ -89,8 +100,8 @@ public class PostController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Cookie", "jwt" + "=" + jwtToken);
 		HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = restTemplate.exchange("http://authentication:8000/api/user", HttpMethod.GET, requestEntity, String.class);
-		//ResponseEntity<String> response = restTemplate.exchange("http://localhost:8000/api/user", HttpMethod.GET, requestEntity, String.class);
+		//ResponseEntity<String> response = restTemplate.exchange("http://authentication:8000/api/user", HttpMethod.GET, requestEntity, String.class);
+		ResponseEntity<String> response = restTemplate.exchange(AppConstants.AUTH_URL, HttpMethod.GET, requestEntity, String.class);
 		HttpStatusCode status = response.getStatusCode();
 		if(status.is4xxClientError()) {
 			throw new UnauthorizedException("Unauthenticated !");
@@ -110,11 +121,11 @@ public class PostController {
 	@GetMapping("/user/{username}/posts")
 	public ResponseEntity<PostResponse> getAllPostByUsername(
 		@PathVariable String username, 
-		@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-		@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-		@RequestParam(value = "sortBy", defaultValue = "postID", required = false) String sortBy,
-		@RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
-		){
+		@RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+		@RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+		@RequestParam(value = "sortBy", defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
+		@RequestParam(value = "sortDir", defaultValue = AppConstants.SORT_DIR, required = false) String sortDir
+	){
 		
 		PostResponse posts = postService.getAllPostByUsername(username, pageNumber, pageSize, sortBy, sortDir);
 		return new ResponseEntity<>(posts, HttpStatus.OK);
@@ -124,12 +135,22 @@ public class PostController {
 	@GetMapping("/category/{categoryID}/posts")
 	public ResponseEntity<PostResponse> getAllPostByCategory(
 		@PathVariable Integer categoryID,
-		@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-		@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-		@RequestParam(value = "sortBy", defaultValue = "postID", required = false) String sortBy,
-		@RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) throws NotFoundException{
+		@RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+		@RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+		@RequestParam(value = "sortBy", defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
+		@RequestParam(value = "sortDir", defaultValue = AppConstants.SORT_DIR, required = false) String sortDir) throws NotFoundException
+	{
 
 		PostResponse posts = postService.getAllPostByCategory(categoryID, pageNumber, pageSize, sortBy, sortDir);
+		return new ResponseEntity<>(posts, HttpStatus.OK);
+	}
+
+	@GetMapping("/posts/search/{keywords}")
+	public ResponseEntity<List<PostItem>> searchPostByTitle(
+		@PathVariable("keywords") String keywords
+	){
+
+		List<PostItem> posts = this.postService.searchPosts(keywords);
 		return new ResponseEntity<>(posts, HttpStatus.OK);
 	}
 }
