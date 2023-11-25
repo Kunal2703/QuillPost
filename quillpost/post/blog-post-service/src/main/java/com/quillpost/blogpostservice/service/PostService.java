@@ -1,16 +1,20 @@
 package com.quillpost.blogpostservice.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.quillpost.blogpostservice.exceptions.NotFoundException;
 import com.quillpost.blogpostservice.models.Category;
 import com.quillpost.blogpostservice.models.PostItem;
+import com.quillpost.blogpostservice.payloads.PostResponse;
 import com.quillpost.blogpostservice.repository.CategoryRepository;
 import com.quillpost.blogpostservice.repository.PostRepository;
 
@@ -24,10 +28,24 @@ public class PostService {
 	private CategoryRepository categoryRepository;
 
 	
-	public List<PostItem> getAllPost(){
-		List<PostItem> posts = new ArrayList<>();
-		postRepository.findAll().forEach(posts::add);
-		return posts;
+	public PostResponse getAllPost(Integer pageNumber, Integer pageSize, String sortBy, String sortDir){
+
+		Sort sort=(sortDir.equalsIgnoreCase("asc"))?Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
+		
+		Pageable pageableObj = PageRequest.of(pageNumber, pageSize, sort);
+
+		Page<PostItem> pagePostItem = this.postRepository.findAll(pageableObj);
+
+		List<PostItem> posts = pagePostItem.getContent();
+
+		PostResponse postResponse = new PostResponse();
+		postResponse.setContent(posts);
+		postResponse.setPageNumber(pagePostItem.getNumber());
+		postResponse.setPageSize(pagePostItem.getSize());
+		postResponse.setTotalElements(pagePostItem.getTotalElements());
+		postResponse.setTotalPages(pagePostItem.getTotalPages());
+		postResponse.setLastPage(pagePostItem.isLast());
+		return postResponse;
 	}
 	
 	public PostItem getPostById(Long postId){
@@ -36,14 +54,37 @@ public class PostService {
 		return post;
 	}
 
-	public List<PostItem> getAllPostByUsername(String username){
-		return postRepository.findByUsername(username);
+	public PostResponse getAllPostByUsername(String username, Integer pageNumber, Integer pageSize, String sortBy, String sortDir){
+
+		Sort sort=(sortDir.equalsIgnoreCase("asc"))?Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
+		Pageable pageableObj = PageRequest.of(pageNumber, pageSize, sort);
+		Page<PostItem> pagePostItem= this.postRepository.findByUsername(username, pageableObj);
+		List<PostItem> posts = pagePostItem.getContent();
+		PostResponse postResponse = new PostResponse();
+		postResponse.setContent(posts);
+		postResponse.setPageNumber(pagePostItem.getNumber());
+		postResponse.setPageSize(pagePostItem.getSize());
+		postResponse.setTotalElements(pagePostItem.getTotalElements());
+		postResponse.setTotalPages(pagePostItem.getTotalPages());
+		postResponse.setLastPage(pagePostItem.isLast());
+		return postResponse;
 	}
 
-	public List<PostItem> getAllPostByCategory(Integer categoryID){
+	public PostResponse getAllPostByCategory(Integer categoryID, Integer pageNumber, Integer pageSize, String sortBy, String sortDir){
 		
 		Category cat = categoryRepository.findById(categoryID).orElseThrow(()-> new NotFoundException("Category","category id", categoryID));
-		return postRepository.findByCategory(cat);
+		Sort sort=(sortDir.equalsIgnoreCase("asc"))?Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
+		Pageable pageableObj = PageRequest.of(pageNumber, pageSize, sort);
+		Page<PostItem> pagePostItem=this.postRepository.findByCategory(cat, pageableObj);
+		List<PostItem> posts = pagePostItem.getContent();
+		PostResponse postResponse = new PostResponse();
+		postResponse.setContent(posts);
+		postResponse.setPageNumber(pagePostItem.getNumber());
+		postResponse.setPageSize(pagePostItem.getSize());
+		postResponse.setTotalElements(pagePostItem.getTotalElements());
+		postResponse.setTotalPages(pagePostItem.getTotalPages());
+		postResponse.setLastPage(pagePostItem.isLast());
+		return postResponse;
 	}
 	
 	public PostItem createPost(PostItem post, String user_name, Integer categoryID){
