@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,13 +27,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.quillpost.blogpostservice.models.PostItem;
+import com.quillpost.blogpostservice.payloads.Comments;
 import com.quillpost.blogpostservice.payloads.PostResponse;
+import com.quillpost.blogpostservice.payloads.PostView;
 import com.quillpost.blogpostservice.config.AppConstants;
 import com.quillpost.blogpostservice.exceptions.NotFoundException;
 import com.quillpost.blogpostservice.exceptions.UnauthorizedException;
 import com.quillpost.blogpostservice.service.PostService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://comments:8000"})
 @RestController
 @RequestMapping("/api/")
 public class PostController {
@@ -55,7 +58,6 @@ public class PostController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Cookie", "jwt" + "=" + jwtToken);
 		HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-		//ResponseEntity<String> response = restTemplate.exchange("http://authentication:8000/api/user", HttpMethod.GET, requestEntity, String.class);
 		ResponseEntity<String> response = restTemplate.exchange(AppConstants.AUTH_URL, HttpMethod.GET, requestEntity, String.class);
 		HttpStatusCode status = response.getStatusCode();
 		if(status.is4xxClientError()) {
@@ -80,9 +82,15 @@ public class PostController {
 	}
 	
 	@GetMapping("/posts/{postId}")
-	public ResponseEntity<PostItem> getPostById(@PathVariable Long postId){
+	public ResponseEntity<PostView> getPostById(@PathVariable Long postId){
 		PostItem post=postService.getPostById(postId);
-		return new ResponseEntity<>(post, HttpStatus.OK);
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<List<Comments>> response = restTemplate.exchange(AppConstants.COMMENT_URL+"/post/"+postId+"/list/comments", HttpMethod.GET, null, new ParameterizedTypeReference<List<Comments>>(){});
+		List<Comments> comments = response.getBody();
+		PostView postView = new PostView();
+		postView.setPostItem(post);
+		postView.setComments(comments);
+		return new ResponseEntity<>(postView, HttpStatus.OK);
 	}
 	
 
@@ -100,7 +108,6 @@ public class PostController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Cookie", "jwt" + "=" + jwtToken);
 		HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-		//ResponseEntity<String> response = restTemplate.exchange("http://authentication:8000/api/user", HttpMethod.GET, requestEntity, String.class);
 		ResponseEntity<String> response = restTemplate.exchange(AppConstants.AUTH_URL, HttpMethod.GET, requestEntity, String.class);
 		HttpStatusCode status = response.getStatusCode();
 		if(status.is4xxClientError()) {
@@ -111,7 +118,9 @@ public class PostController {
 		PostItem delPost = postService.getPostById(postId);
 		if(delPost.getUsername().equals(object.getString("username")) ) {
 			postService.deletePost(postId);
-			return new ResponseEntity<>("Post Successfully Deleted",HttpStatus.NO_CONTENT);
+			restTemplate.exchange(AppConstants.COMMENT_URL+"/"+postId+"/delpost", HttpMethod.DELETE, null, String.class).getBody();
+			String output="Post Successfully Deleted";
+			return new ResponseEntity<>(output,HttpStatus.OK);
 		}else {
 			throw new UnauthorizedException("Invalid User, Permission Denied");
 		}
@@ -152,5 +161,11 @@ public class PostController {
 
 		List<PostItem> posts = this.postService.searchPosts(keywords);
 		return new ResponseEntity<>(posts, HttpStatus.OK);
+	}
+
+	@GetMapping("/posts/{postId}/find")
+	public ResponseEntity<String> findPostId(@PathVariable Long postId){
+		this.postService.getPostById(postId);
+		return new ResponseEntity<>("Found Post", HttpStatus.OK);
 	}
 }
