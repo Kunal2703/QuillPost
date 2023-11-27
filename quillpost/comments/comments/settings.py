@@ -126,7 +126,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ORIGIN_ALLOW_ALL = True   #allows all frontend ports to access the app
 
-CORS_ALLOWED_HEADERS = '*'
+CORS_ALLOW_HEADERS = ['Accept', 'Content-Type', 'jwt']
 
 CORS_ALLOW_CREDENTIALS = True  #allows frontend to get the cookies
 

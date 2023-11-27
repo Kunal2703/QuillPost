@@ -5,9 +5,10 @@ import {Link, useParams} from "react-router-dom"
 import {Row, Col, Container} from "reactstrap"
 import { loadPost } from '../services/post-service'
 import { createComment } from '../services/post-service'
-
 import {toast} from "react-toastify"
 import { Card, CardBody, CardText, Input, Button} from 'reactstrap';
+import { isLoggedIn } from '../auth'
+
 const PostPage = () => {
 
 
@@ -18,10 +19,12 @@ const PostPage = () => {
     })
 
     useEffect(() => {
-        //load post of postId
+
+        // load post of postId 
         loadPost(postId).then(data => {
             console.log(data);
             setPost(data)
+
         }).catch(error => {
             console.log(error)
             toast.error("Error in loading post")
@@ -33,9 +36,27 @@ const PostPage = () => {
     }
 
     const submitPost = () => {
+
+        if(!isLoggedIn()){
+            toast.error("You must be logged in first!!")
+            return
+        }
+
+
+        if(comment.content.trim === '') {
+            return
+        }
         createComment(comment, post.postItem.postId)
         .then(data => {
             console.log(data)
+            toast.success("comment added successfully!!")
+            setPost({
+                ...post,
+                comments: [...post.comments, data.data]
+            })
+            setComment({
+                content: ''
+            })
         }).catch(error => {
             console.log(error)
         })
@@ -111,7 +132,7 @@ const PostPage = () => {
                                     <Input 
                                         type="textarea" 
                                         placeholder="Enter comment here..."
-                                        value={comment.comment}
+                                        value={comment.content}
                                         onChange={(event) =>setComment({content: event.target.value})}
                                     />
 
