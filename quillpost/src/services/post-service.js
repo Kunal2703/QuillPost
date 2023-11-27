@@ -1,5 +1,7 @@
 import { myPostAxios } from "./helper";
+import { myCommentAxios } from "./helper";
 import { BASE_URL_POST } from "./helper";
+import { BASE_URL_Comment } from "./helper";
 
 //create post function
 export const createPost = (postData) => {
@@ -22,4 +24,9 @@ export const loadAllPosts = (pageNumber, pageSize) => {
 export const loadPost = (postId) => {
     return myPostAxios.get(BASE_URL_POST+ "/api/posts/"+postId)
         .then((response) => response.data);
+};
+
+//for comment
+export const createComment = (comment, postId) => {
+    return myCommentAxios.post(BASE_URL_Comment+`/api/post/${postId}/comments`, comment)
 };

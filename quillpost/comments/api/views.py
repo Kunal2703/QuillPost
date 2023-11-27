@@ -19,7 +19,8 @@ class CommentCreate(APIView):
             return False
         
     def post(self, request, postId):
-        token = request.COOKIES.get('jwt')
+        # token = request.COOKIES.get('jwt')
+        token = request.headers['jwt']
         if not token:
             raise AuthenticationFailed("Unauthenticated")
         cookie_data={"jwt":token}
