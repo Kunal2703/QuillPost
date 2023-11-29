@@ -8,11 +8,16 @@ export const myAuthAxios = axios.create({
 });
 
 
+
 //for Post part
 export const BASE_URL_POST = 'http://localhost:8080';
 export const myPostAxios = axios.create({
     baseURL: BASE_URL_POST,
 });
+
+export const myGetPostAxios = axios.create({
+    baseURL: BASE_URL_POST,
+})
 
 myPostAxios.interceptors.request.use(config=>{
     const token=getToken()
@@ -21,6 +26,7 @@ myPostAxios.interceptors.request.use(config=>{
         return config
     }
 } , error=> Promise.reject(error))
+
 
 
 //for comment
