@@ -81,7 +81,7 @@ spec:
     spec:
       containers:
       - name: post
-        image: pranavpras2001/quillpost_post:8.0
+        image: pranavpras2001/quillpost_post:9.0
         ports:
           - containerPort: 8080
         env:

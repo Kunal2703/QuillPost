@@ -9,9 +9,9 @@ services:
     volumes:
       - ./auth:/app
     depends_on:
-      - auth_db
+      - auth-db
   
-  auth_db:
+  auth-db:
     image: mysql:8
     restart: always
     environment:
@@ -32,10 +32,9 @@ services:
     volumes:
       - ./comments:/app
     depends_on:
-      - comment_db
-      - authentication
+      - comment-db
 
-  comment_db:
+  comment-db:
     image: mysql:8
     restart: always
     environment:
@@ -51,19 +50,36 @@ services:
     build:
       context: ./post/blog-post-service
       dockerfile: Dockerfile
+    environment:
+      POSTDB_HOST: post-db
+      POSTDB_NAME: quillpost_post
+      POSTDB_USERNAME: "root"
+      POSTDB_PASSWORD: "1234"
     ports:
       - 8080:8080
     depends_on:
-      - post_db  
+      - post-db  
 
-  post_db:
+  post-db:
     image: mysql:8
     restart: always
     environment:
-      MYSQL_DATABASE: blogdb
+      MYSQL_DATABASE: quillpost_post
       MYSQL_PASSWORD: 1234
       MYSQL_ROOT_PASSWORD: 1234
     volumes: 
       - ./post/blog-post-service/.dbdata:/var/lib/mysql  		
     ports:
       - 3307:3306
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - authentication
+      - post
+      - comments
+    
