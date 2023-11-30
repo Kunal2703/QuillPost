@@ -1,5 +1,5 @@
 #!/bin/bash
-until nc -z -v -w30 "post_db" 3306
+until nc -z -v -w30 "post-db" 3306
 do
     echo "Waiting for database connection..."
     sleep 10

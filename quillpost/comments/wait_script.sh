@@ -1,5 +1,5 @@
 #!/bin/bash
-until nc -z -v -w30 "comment_db" 3306
+until nc -z -v -w30 "comment-db" 3306
 do
     echo "Waiting for database connection..."
     sleep 10

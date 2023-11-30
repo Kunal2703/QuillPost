@@ -1,5 +1,5 @@
 #!/bin/bash
-until nc -z -v -w30 "auth_db" 3306
+until nc -z -v -w30 "auth-db" 3306
 do
     echo "Waiting for database connection..."
     sleep 10

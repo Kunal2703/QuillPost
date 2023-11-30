@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: comment-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi  
+  selector:
+    matchLabels:
+      app: comment-db
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comment-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comment-db
+  template:
+    metadata:
+      labels:
+        app: comment-db
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "1234"
+        - name: MYSQL_DATABASE
+          value: "quillpost_comment"
+
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql  # MySQL data directory
+
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: comment-pvc
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: comment-db
+spec:
+  selector:
+    app: comment-db
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+  clusterIP: None
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comments
+spec:
+  selector:
+    matchLabels:
+      app: comments
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: comments
+    spec:
+      containers:
+      - name: comments
+        image: pranavpras2001/quillpost_comments:latest
+        ports:
+          - containerPort: 8000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: comments
+spec:
+  selector:
+    app: comments
+  ports:
+    - protocol: "TCP"
+      port: 8000
+      targetPort: 8000
+      nodePort: 30025
+  type: NodePort

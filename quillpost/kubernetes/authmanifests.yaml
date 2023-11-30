@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: auth-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi  
+  selector:
+    matchLabels:
+      app: auth-db
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-db
+  template:
+    metadata:
+      labels:
+        app: auth-db
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "1234"
+        - name: MYSQL_DATABASE
+          value: "quillpost_auth"
+
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql  # MySQL data directory
+
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: auth-pvc
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-db
+spec:
+  selector:
+    app: auth-db
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+  clusterIP: None
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication
+spec:
+  selector:
+    matchLabels:
+      app: authentication
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: authentication
+    spec:
+      containers:
+      - name: authentication
+        image: pranavpras2001/quillpost_auth:latest
+        ports:
+          - containerPort: 8000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentication
+spec:
+  selector:
+    app: authentication
+  ports:
+    - protocol: "TCP"
+      port: 8000
+      targetPort: 8000
+      nodePort: 30020
+  type: NodePort

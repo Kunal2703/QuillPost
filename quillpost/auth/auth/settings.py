@@ -83,7 +83,7 @@ DATABASES = {
         "NAME": "quillpost_auth",
         "USER": "root",
         "PASSWORD" : "1234",
-        "HOST": 'auth_db',
+        "HOST": 'auth-db',
         "PORT": '3306',
 
     }

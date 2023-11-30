@@ -83,7 +83,7 @@ DATABASES = {
         "NAME": "quillpost_comment",
         "USER": "root",
         "PASSWORD" : "1234",
-        "HOST": 'comment_db',
+        "HOST": 'comment-db',
         "PORT": '3306',
     }
 }
