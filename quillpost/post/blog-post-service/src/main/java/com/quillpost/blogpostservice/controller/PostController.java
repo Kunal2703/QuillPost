@@ -35,7 +35,8 @@ import com.quillpost.blogpostservice.exceptions.NotFoundException;
 import com.quillpost.blogpostservice.exceptions.UnauthorizedException;
 import com.quillpost.blogpostservice.service.PostService;
 
-@CrossOrigin(origins = {"http://localhost:3000", "http://comments:8000"})
+//@CrossOrigin(origins = {"http://localhost:3000", "http://comments:8000", "http://frontend:3000"})
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/")
 public class PostController {

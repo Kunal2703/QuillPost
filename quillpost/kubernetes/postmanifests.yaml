@@ -73,7 +73,7 @@ spec:
   selector:
     matchLabels:
       app: post
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -81,7 +81,7 @@ spec:
     spec:
       containers:
       - name: post
-        image: pranavpras2001/quillpost_post:latest
+        image: pranavpras2001/quillpost_post:8.0
         ports:
           - containerPort: 8080
         env:

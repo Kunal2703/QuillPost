@@ -283,7 +283,7 @@ spec:
   selector:
     matchLabels:
       app: post
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -291,7 +291,7 @@ spec:
     spec:
       containers:
       - name: post
-        image: pranavpras2001/quillpost_post:latest
+        image: pranavpras2001/quillpost_post:9.0
         ports:
           - containerPort: 8080
         env:
@@ -318,4 +318,42 @@ spec:
       port: 8080
       targetPort: 8080
       nodePort: 30008
+  type: NodePort
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: pranavpras2001/quillpost_frontend:3.0
+        ports:
+          - containerPort: 3000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: "TCP"
+      port: 3000
+      targetPort: 3000
+      nodePort: 30030
   type: NodePort
