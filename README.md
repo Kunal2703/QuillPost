@@ -19,7 +19,7 @@ The application can be run using docker-compose or Kubernetes. The docker-compos
   cd quillpost
   docker-compose up -d
 ```
-The app can then be accessed on localhost:3000
+> The app can then be accessed on localhost:3000
 ## Run the project using kubernetes manifests
 
 ```bash
