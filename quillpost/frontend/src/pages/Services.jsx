@@ -1,9 +1,12 @@
 import Base from "../components/Base"
+import { Container } from 'reactstrap'
 
 const Services = () => {
     return (
         <Base>
-        <h1>This is a service page</h1>
+            <Container>
+                <h1>This is a service page</h1>
+            </Container>
         </Base>
     )
 }

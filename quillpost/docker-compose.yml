@@ -10,7 +10,7 @@ services:
       - ./auth:/app
     depends_on:
       - auth-db
-  
+
   auth-db:
     image: mysql:8
     restart: always
@@ -58,7 +58,7 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - post-db  
+      - post-db
 
   post-db:
     image: mysql:8
@@ -67,8 +67,8 @@ services:
       MYSQL_DATABASE: quillpost_post
       MYSQL_PASSWORD: 1234
       MYSQL_ROOT_PASSWORD: 1234
-    volumes: 
-      - ./post/blog-post-service/.dbdata:/var/lib/mysql  		
+    volumes:
+      - ./post/blog-post-service/.dbdata:/var/lib/mysql
     ports:
       - 3307:3306
 
@@ -82,4 +82,10 @@ services:
       - authentication
       - post
       - comments
-    
+    develop:
+      watch:
+        - path: ./frontend
+          target: /react-app
+          action: sync
+          ignore:
+            - node_modules/

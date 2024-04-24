@@ -1,8 +1,12 @@
 body{
-  background: #e1f5fe!important;
+  background: #C6D8D3!important;
 }
 
 .active>.page-link, .page-link.active{
   background-color: #121212!important;
   border-color: #121212!important;
+}
+
+nav.bg-dark{
+  background-color: #253855!important;
 }

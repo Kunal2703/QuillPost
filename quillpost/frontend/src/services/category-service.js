@@ -1,4 +1,4 @@
-import { BASE_URL_POST, myPostAxios } from "./helper";
+import { myPostAxios } from "./helper";
 
 export const loadAllCategories = () => {
     return myPostAxios

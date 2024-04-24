@@ -1,17 +1,9 @@
-import { myPostAxios } from "./helper";
-import { myCommentAxios } from "./helper";
-import { myGetPostAxios } from "./helper";
-import { BASE_URL_POST } from "./helper";
-import { BASE_URL_Comment } from "./helper";
+import { myPostAxios, myCommentAxios, myGetPostAxios } from './helper';
 
 //create post function
 export const createPost = (postData) => {
-
-    //console.log(postData);
-    
     return myPostAxios.post(`/category/${postData.categoryID}/posts`,postData)
         .then(response => response.data)
-
 };
 
 //get all posts

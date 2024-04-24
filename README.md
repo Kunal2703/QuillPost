@@ -18,6 +18,7 @@ The application can be run using docker-compose or Kubernetes. The docker-compos
 ```bash
   cd quillpost
   docker-compose up -d
+  docker compose alpha watch
 ```
 The app can then be accessed on localhost:3000
 ## Run the project using kubernetes manifests

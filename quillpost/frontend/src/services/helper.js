@@ -7,8 +7,6 @@ export const myAuthAxios = axios.create({
     baseUrl: BASE_URL_AUTH,
 });
 
-
-
 //for Post part
 export const BASE_URL_POST = '/api';
 export const myPostAxios = axios.create({
@@ -26,8 +24,6 @@ myPostAxios.interceptors.request.use(config=>{
         return config
     }
 } , error=> Promise.reject(error))
-
-
 
 //for comment
 export const BASE_URL_Comment = '/api/post';

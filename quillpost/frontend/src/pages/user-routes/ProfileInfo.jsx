@@ -1,10 +1,13 @@
 import React from 'react'
 import Base from '../../components/Base'
+import { Container } from 'reactstrap'
 
 function profileInfo() {
   return (
     <Base>
-      <div>profileInfo</div>
+      <Container>
+        <div>profileInfo</div>
+      </Container>
     </Base>
   )
 }
